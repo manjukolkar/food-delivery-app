@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FoodieHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="{{ url_for('home') }}" class="logo-link">
+                <span class="logo">🍔 FoodieHub</span>
+            </a>
+            <span class="location">📍 Bangalore</span>
+        </div>
+
+        <!-- SEARCH BAR -->
+        <form class="nav-search" method="GET" action="{{ url_for('home') }}">
+            <input type="text" name="q" placeholder="Search for food..."
+                   value="{{ search_query|default('') }}">
+            <button type="submit">🔍</button>
+        </form>
+
+        <div class="nav-right">
+            <a href="#" class="nav-link">Offers</a>
+
+            {% if current_user.is_authenticated %}
+                <span class="nav-link">Hi, {{ current_user.username }}</span>
+                <a href="{{ url_for('cart') }}" class="cart-btn">🛒 Cart</a>
+                <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                <a href="{{ url_for('register') }}" class="nav-link">Register</a>
+                <a href="{{ url_for('login') }}" class="cart-btn">🛒 Cart</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-wrap">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- PAGE CONTENT -->
+    {% block content %}{% endblock %}
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2025 FoodieHub — Built with Flask</p>
+    </footer>
+
+</body>
+</html>

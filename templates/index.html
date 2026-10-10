@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- HERO BANNER -->
+<section class="hero">
+    <h1>Order food from your favourite restaurants</h1>
+    <p>Fast delivery • Best offers • Trusted by thousands</p>
+</section>
+
+<!-- CATEGORY CHIPS -->
+<section class="categories">
+    <a href="{{ url_for('home') }}"
+       class="chip {% if not active_category %}chip-active{% endif %}">
+        🍽️ All
+    </a>
+
+    {% set cats = [
+        ('Pizza', '🍕 Pizza'),
+        ('Burger', '🍔 Burger'),
+        ('Biryani', '🍛 Biryani'),
+        ('Healthy', '🥗 Healthy'),
+        ('Desserts', '🍰 Desserts'),
+        ('Drinks', '🥤 Drinks')
+    ] %}
+
+    {% for cat_key, cat_label in cats %}
+        <a href="{{ url_for('home', category=cat_key) }}"
+           class="chip {% if active_category == cat_key %}chip-active{% endif %}">
+            {{ cat_label }}
+        </a>
+    {% endfor %}
+</section>
+
+<!-- SEARCH RESULT INFO -->
+{% if search_query or active_category %}
+<section class="result-info">
+    {% if search_query and active_category %}
+        Showing results for "<b>{{ search_query }}</b>" in <b>{{ active_category }}</b>
+    {% elif search_query %}
+        Showing results for "<b>{{ search_query }}</b>"
+    {% elif active_category %}
+        Category: <b>{{ active_category }}</b>
+    {% endif %}
+    <a href="{{ url_for('home') }}" class="clear-btn">Clear ✕</a>
+</section>
+{% endif %}
+
+<!-- FOOD GRID -->
+<section class="food-grid">
+    {% if foods %}
+        {% for food in foods %}
+        <div class="food-card">
+            <img src="{{ food.img }}" alt="{{ food.name }}">
+            <div class="food-info">
+                <h3>{{ food.name }}</h3>
+                <p class="meta">⭐ {{ food.rating }} • {{ food.time }}</p>
+                <div class="card-footer">
+                    <span class="price">₹{{ food.price }}</span>
+
+                    {% if current_user.is_authenticated %}
+                        {% if cart_qty.get(food.id) %}
+                            <div class="qty-control">
+                                <form method="POST" action="{{ url_for('decrease_qty', food_id=food.id) }}">
+                                    <button type="submit" class="qty-btn">−</button>
+                                </form>
+                                <span class="qty-num">{{ cart_qty[food.id] }}</span>
+                                <form method="POST" action="{{ url_for('increase_qty', food_id=food.id) }}">
+                                    <button type="submit" class="qty-btn">+</button>
+                                </form>
+                            </div>
+                        {% else %}
+                            <form method="POST" action="{{ url_for('add_to_cart', food_id=food.id) }}">
+                                <button type="submit" class="add-btn">Add +</button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="add-btn">Add +</a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-results">
+            <h2>😕 No dishes found</h2>
+            <p>Try a different search or pick a category above.</p>
+            <a href="{{ url_for('home') }}" class="checkout-btn">Back to Home</a>
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}

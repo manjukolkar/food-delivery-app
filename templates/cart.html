@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="cart-wrap">
+    <h2 class="cart-title">🛒 Your Cart</h2>
+
+    {% if items %}
+        <div class="cart-list">
+            {% for item in items %}
+            <div class="cart-row">
+                <img src="{{ item.food.img }}" alt="{{ item.food.name }}">
+                <div class="cart-details">
+                    <h3>{{ item.food.name }}</h3>
+                    <p class="meta">⭐ {{ item.food.rating }} • {{ item.food.time }}</p>
+                </div>
+                <div class="cart-right">
+                    <span class="price">₹{{ item.food.price * item.quantity }}</span>
+                    <div class="qty-control">
+                        <form method="POST" action="{{ url_for('decrease_qty', food_id=item.food.id) }}">
+                            <button type="submit" class="qty-btn">−</button>
+                        </form>
+                        <span class="qty-num">{{ item.quantity }}</span>
+                        <form method="POST" action="{{ url_for('increase_qty', food_id=item.food.id) }}">
+                            <button type="submit" class="qty-btn">+</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="cart-total">
+            <span>Total</span>
+            <span class="price">₹{{ total }}</span>
+        </div>
+
+        <div class="cart-actions">
+            <a href="{{ url_for('home') }}" class="continue-btn">← Continue Shopping</a>
+            <button class="checkout-btn" onclick="alert('Checkout coming in next step!')">
+                Checkout →
+            </button>
+        </div>
+    {% else %}
+        <div class="empty-cart">
+            <p>Your cart is empty 🍽️</p>
+            <a href="{{ url_for('home') }}" class="checkout-btn">Browse Food</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
