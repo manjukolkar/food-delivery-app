@@ -27,10 +27,10 @@ A Swiggy/Zomato-inspired food delivery web app built with **Flask + SQLite**.
 
 ## 🚀 Quick Start
 
-See [SETUP.md](SETUP.md) for detailed setup instructions.
+
 
 ```bash
-git clone <your-repo-url>
+
 cd food-delivery-app
 python -m venv venv
 source venv/Scripts/activate      # Windows Git Bash
